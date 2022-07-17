@@ -21,7 +21,8 @@ converter = trt.TrtGraphConverterV2(
 converter.convert()
 
 # Initialise a randomised input with corresponding input sizes (this is needed, since we know the
-# model inputs and it is required for proper engine building)
+# model inputs which enables the engine to select the best operators which in turn increase the
+# inference speed and performance)
 def inputs():
     BATCH_SIZE = 1
     input_ = np.random.normal(size=(BATCH_SIZE, 224, 224, 3)).astype(np.float32)
