@@ -14,12 +14,12 @@ tf.keras.backend.clear_session()
 save_pb_dir = "./model/"
 model_fname = "./model/model.h5"
 trt_engine_graph_dir = "./model/"
-trt_engine_graph_name = "trt_graph.pb"
-precision_mode = "FP16"
+precision_mode = "FP16" # FP32, FP16, UINT8 - UINT8 requires calibration, not configured yet
+trt_engine_graph_name = f"trt_engine_{precision_mode}.pb"
 
 def freeze_graph(graph, session, output, save_pb_dir=".", save_pb_name="frozen_model.pb", 
                  save_pb_as_text=False):
-    """Generates a frozen graph from loaded Keras model
+    """Generates a frozen protobuf (.pb) graph from loaded Keras model
 
     Args:
         graph: Session graph
@@ -64,11 +64,11 @@ trt_graph = trt.create_inference_graph(
     input_graph_def=frozen_graph,
     outputs=output_names,
     max_batch_size=1,
-    max_workspace_size_bytes=1 << 25,
+    max_workspace_size_bytes=1<<25,
     precision_mode=precision_mode,
     minimum_segment_size=50
 )
 
 # Save the generated TensorRT engine graph
 graph_io.write_graph(trt_graph, trt_engine_graph_dir,
-                     "trt_graph.pb", as_text=False)
+                     trt_engine_graph_name, as_text=False)
