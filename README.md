@@ -16,4 +16,4 @@ This repository contains the code related to model quantisation with TensorRT fo
 
 [1]:tf1
 [2]:tf2
-[3]:PyTorch
+[3]:pytorch
