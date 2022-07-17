@@ -1,11 +1,11 @@
-Code related to model quantisation with TensorRT for TensorFlow 1.x
+Code related to model quantisation with TensorRT for TensorFlow 2.x
 
 # your_model
 Well... as the title suggests
-Creates a MobileNetV2 model instance and saves it as a Keras .h5 file
+Creates a MobileNetV2 model instance and saves it as a protobuf (.pb) frozen model file
 
-# freeze_build_trt
-Freezes the previously created model, optimises it with TensorRT and saves the
+# build_trt
+Loads the previously created model, optimises it with TensorRT and saves the
 optimised model engine
 
 # load_trt
