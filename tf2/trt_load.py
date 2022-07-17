@@ -30,7 +30,6 @@ inp = tf.convert_to_tensor(
     next(input_fn())[0]
 )
 
-
 # Benchmark the model throughput
 import time
 import numpy as np

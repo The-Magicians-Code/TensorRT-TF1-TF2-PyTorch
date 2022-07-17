@@ -20,14 +20,14 @@ converter = trt.TrtGraphConverterV2(
 )
 converter.convert()
 
-# Initialise a random input (to avoid building the engine on runtime) and build the engine now
+# Initialise a randomised input with corresponding input sizes (this is needed, since we know the
+# model inputs and it is required for proper engine building)
 def inputs():
     BATCH_SIZE = 1
     input_ = np.random.normal(size=(BATCH_SIZE, 224, 224, 3)).astype(np.float32)
     yield [input_]
 
+# Build and save the TensorRT model
 converter.build(input_fn = inputs)
-
-# Save the built TensorRT model
 converter.save(trt_engine_graph_name)
 print("Model saved to:", trt_engine_graph_name)
