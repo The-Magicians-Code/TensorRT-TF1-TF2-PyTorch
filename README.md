@@ -3,9 +3,9 @@
 I surfed the internet, went through all of the broken-ass nonexistent fragments of things engineers call documentation and all sorts of porn. I've seen things that even I didn't know existed.
 
 **And this is what I came up with**:  
-Since the makers of TensorFlow thought that backward compatibility is nonessential, I created two separate folders with necessary scripts that assist you in taking a Keras or native TensorFlow model and converting it to a TensorRT engine which in turn can be used to run inference better, faster and more reliably than the great-wall-of-mexico-guy gets to run again for president.
+Since the makers of TensorFlow thought that backward compatibility is nonessential, I created two separate folders with necessary scripts that assist you in taking a [Keras][3] or native [TensorFlow][4] model and converting it to a [TensorRT][2] engine which in turn can be used to run inference better, faster and more reliably than the great-wall-of-mexico-guy gets to run again for president.
 
-As for PyTorch, I'm amazed by their user friendliness, something which cannot be said about Lizard man, who owns them, but who cares? As long as I don't have to create an account to use it, I'm fine.
+As for [PyTorch][5], I'm amazed by their user friendliness, something which cannot be said about Lizard man, who owns them, but who cares? As long as I don't have to create an account to use it, I'm fine.
 
 Folders have simple names, **pytorch** is meant for **PyTorch** scripts, **TF** for **Tensorflow** scripts, notice the different versions once you figure out how to count to two.
 
@@ -17,5 +17,10 @@ These scripts work on Nvidia GPUs and Nvidia Jetsons, (GTX1060 6Gb, Jetson Xavie
 These scripts have been tested with: 
 * TensorFlow 1.14.0 [`./tf1`](tf1)
 * Tensorflow 2.5.0 [`./tf2`](tf2)  
+* PyTorch Soon™
 
 [1]:https://www.tensorflow.org/guide/migrate/tf1_vs_tf2
+[2]:https://github.com/NVIDIA/TensorRT
+[3]:https://github.com/keras-team/keras
+[4]:https://github.com/tensorflow/tensorflow
+[5]:https://github.com/pytorch/pytorch
