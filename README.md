@@ -14,7 +14,7 @@ This repository contains the code related to model quantisation with TensorRT fo
 
 These scripts work on Nvidia GPUs and Nvidia Jetsons, (GTX1060 6Gb, Jetson Xavier and Jetson Nano 2Gb and 4Gb tested)
 
-These scripts have been tested with: 
+These scripts have been tested with Python 3.6.9 and:  
 * TensorFlow 1.14.0 [`./tf1`](tf1)
 * Tensorflow 2.5.0 [`./tf2`](tf2)  
 * PyTorch Soon™
