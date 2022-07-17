@@ -7,7 +7,7 @@ Since the makers of TensorFlow thought that backward compatibility is nonessenti
 
 As for PyTorch, I'm amazed by their user friendliness, something which cannot be said about Lizard man, who owns them, but who cares? As long as I don't have to create an account to use it, I'm fine.
 
-Folders have simple names, **pytorch** is meant for **PyTorch** scripts, **TF** for **Tensorflow** scripts, notice the different versions once you know how to count to two.
+Folders have simple names, **pytorch** is meant for **PyTorch** scripts, **TF** for **Tensorflow** scripts, notice the different versions once you figure out how to count to two.
 
 My lawer advised me to be polite, but I don't have the slightest idea of what that could mean, so here's the conclusion:  
 This repository contains the code related to model quantisation with TensorRT for TensorFlow 1.X, 2.X (highly recommend migrating to [2.X][1] to avoid migraines) and PyTorch (to be created)  
