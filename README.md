@@ -9,7 +9,7 @@ As for PyTorch, I'm amazed by their user friendliness, something which cannot be
 
 Folders have simple names, **pytorch** is meant for **PyTorch** scripts, **TF** for **Tensorflow** scripts, notice the different versions once you figure out how to count to two.
 
-My lawer advised me to be polite, but I don't have the slightest idea of what that could mean, so here's the conclusion:  
+My lawer advised me to be polite, but I don't have the slightest idea of what any of that means, so here's the conclusion:  
 This repository contains the code related to model quantisation with TensorRT for TensorFlow 1.X, 2.X (highly recommend migrating to [2.X][1] to avoid migraines) and PyTorch (to be created)  
 
 These scripts work on Nvidia GPUs and Nvidia Jetsons, (GTX1060 6Gb, Jetson Xavier and Jetson Nano 2Gb and 4Gb tested)
