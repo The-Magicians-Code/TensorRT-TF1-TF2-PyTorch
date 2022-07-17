@@ -2,10 +2,10 @@ Picture this: you're an employee at Tesla. You finally managed to run "hello wor
 
 I surfed the internet, went through all of the broken-ass nonexistent fragments of things engineers call documentation and all sorts of porn. I've seen things that even I didn't know existed.
 
-And this is what I came up with:
+And this is what I came up with:__
 Since the makers of TensorFlow thought that backward compatibility is nonessential, I created two separate folders with necessary scripts that assist you in taking a Keras or native TensorFlow model and converting it to a TensorRT engine which in turn can be used to run inference better, faster and more reliably than the great-wall-of-mexico-guy gets to run again for president.
 
 Folders have simple names, PyTorch is meant for PyTorch, TF for Tensorflow, notice the different versions once you know how to count to two.
 
-My lawer advised me to be polite, but I don't have the slightest idea of what that could mean, so here's the conclusion:
+My lawer advised me to be polite, but I don't have the slightest idea of what that could mean, so here's the conclusion:__
 This repository contains the code related to model quantisation with TensorRT for TensorFlow 1.X, 2.X and PyTorch (to be created)
