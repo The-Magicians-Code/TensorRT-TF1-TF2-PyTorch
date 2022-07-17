@@ -1,1 +1,0 @@
-input_1,predictions/Softmax
