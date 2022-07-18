@@ -5,11 +5,11 @@ I surfed the internet, went through all of the broken-ass nonexistent fragments 
 **And this is what I came up with**:  
 Since the makers of TensorFlow thought that backward compatibility is nonessential, I created two separate folders with necessary scripts that assist you in taking a [Keras][3] or native [TensorFlow][4] model and converting it to a [TensorRT][2] engine which in turn can be used to run inference better, faster and more reliably than the great-wall-of-mexico-guy gets to run again for president.
 
-As for [PyTorch][5], I'm amazed by their user friendliness, something which cannot be said about Lizard man, who owns them, but who cares? As long as I don't have to create an account to use it, I'm fine.
+As for [PyTorch][5], I'm amazed by their user friendliness, something which cannot be said about the Lizard man, who owns them, but who cares? As long as I don't have to create an account to use it, I'm fine.
 
 Folders have simple names, **pytorch** is meant for **PyTorch** scripts, **TF** for **Tensorflow** scripts, notice the different versions once you figure out how to count to two.
 
-My lawer advised me to be polite, but I don't have the slightest idea of what any of that means, so here's the conclusion:  
+My lawyers advised me to be polite, but I don't have the slightest idea of what any of that means, so here's the conclusion:  
 This repository contains the code related to model quantisation with TensorRT for TensorFlow 1.X, 2.X (highly recommend migrating to [2.X][1] to avoid migraines) and PyTorch (to be created)  
 
 These scripts work on Nvidia GPUs and Nvidia Jetsons, (GTX1060 6Gb, Jetson Xavier and Jetson Nano 2Gb and 4Gb tested)
