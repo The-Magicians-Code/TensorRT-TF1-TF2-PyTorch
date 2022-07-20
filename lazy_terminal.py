@@ -10,7 +10,7 @@ parser.add_argument("--precision_mode",
     required=True) # Uint8 Soon_tm
 parser.add_argument("--input_model", 
     type=str,
-    help="Keras .h5 file or SavedModel .pb, model.h5 or folder consisting model.pb for example", 
+    help="Keras .h5 file or SavedModel _pb, model.h5 or folder consisting model.pb for example", 
     required=True)
 parser.add_argument("--batch_size", 
     type=int,
@@ -18,7 +18,7 @@ parser.add_argument("--batch_size",
     default=1)
 parser.add_argument("--save_frozen_dir", 
     type=str,
-    help="Saves Keras .h5 model as frozen .pb model to a specified " \
+    help="Saves Keras .h5 model as frozen _pb model to a specified " \
     "directory, can be fed later manually to the TensorRT engine or" \
     " launched to mobile environments", 
     default="./")
@@ -128,7 +128,7 @@ def tf2_engine(model_fname=args.input_model,
         TensorRT engine: Does what the title says
     """
     import numpy as np  # For computing the last five digits of Pi
-
+    model = None
     if model_fname.endswith(".h5"): # If it's a Keras model
         model = tf.keras.models.load_model(model_fname)
         model.save(f"{model_fname[:-3]}_saved_model") # Save it as ProtoBuf model
