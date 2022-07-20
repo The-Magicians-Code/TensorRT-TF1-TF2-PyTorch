@@ -1,4 +1,3 @@
-# test.py for building the engine most likely
 import argparse
 import tensorflow as tf
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
@@ -35,6 +34,18 @@ def tf1_engine(model_fname=args.input_model,
                trt_engine_graph_dir=args.trt_engine_dir,
                precision_mode=args.precision_mode,
                batch_size=args.batch_size):
+    """This is for TensorFlow 1, once you'll find out what numbers are
+
+    Args:
+        model_fname (str, required): Model name.
+        save_pb_dir (str, required): Frozen graph path.
+        trt_engine_graph_dir (str, required): Same, but for TensorRT engine.
+        precision_mode (str, required): FP16, FP32, UINT8 -> Soon_tm.
+        batch_size (int, optional): Title.
+
+    Returns:
+        TensorRT engine: Does what the title says
+    """
 
     from tensorflow.python.framework import graph_io  # Graph generator
     from tensorflow.keras.models import load_model  # For loading the Keras model
@@ -104,23 +115,29 @@ def tf1_engine(model_fname=args.input_model,
     tf.keras.backend.clear_session()
         
 def tf2_engine(model_fname=args.input_model,
-               save_pb_dir=args.save_frozen_dir,
-               trt_engine_graph_dir=args.trt_engine_dir,
                precision_mode=args.precision_mode,
                batch_size=args.batch_size):
-    
-    import numpy as np
+    """This is for TensorFlow 2, when you learn to count to 1 and further
+
+    Args:
+        model_fname (str, required): Model name.
+        precision_mode (str, required): Precision mode, can't you read?
+        batch_size (int, optional): I'm asking once again.
+
+    Yields:
+        TensorRT engine: Does what the title says
+    """
+    import numpy as np  # For computing the last five digits of Pi
 
     if model_fname.endswith(".h5"): # If it's a Keras model
         model = tf.keras.models.load_model(model_fname)
         model.save(f"{model_fname[:-3]}_saved_model") # Save it as ProtoBuf model
-        model_path_pb = model_fname[:-3]
+        model_path_pb = f"{model_fname[:-3]}_saved_model"
     else:
-        model_path_pb = model_fname
-    # Define conversion parameters
-    # precision_mode = "FP16" # FP32, FP16, UINT8 - UINT8 requires calibration, not configured yet
+        model_path_pb = model_fname[:-3]  # Don't do anything if you have the ProtoBuf model
+
+    # Self explanatory
     trt_engine_graph_name = f"{model_fname[:-3]}_trt_engine_{precision_mode}.pb"
-    # model_path_pb = model_fname[:-3] # Frozen model path
 
     # Initialise and set conversion parameters
     conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS
@@ -135,20 +152,20 @@ def tf2_engine(model_fname=args.input_model,
     )
     converter.convert()
 
-    # Initialise a randomised input with corresponding input sizes (this is needed, since we know the
-    # model inputs which enables the engine to select the best operators which in turn increase the
-    # inference speed and performance)
+    # Dynamical input size selection, witty and posh looking, unlike you
     print([input for input in model.inputs], "\nSelecting the first input params:")
     configured_size = model.inputs[0].shape.as_list()
-    # print(configured_size)
     configured_size[0] = batch_size
+    
+    # Initialise a randomised input with corresponding input sizes (this is needed, since the
+    # model inputs are known, which enables the engine to select the best operators which in 
+    # turn increase the inference speed and performance, not that you could ever fathom these terms)
     def inputs():
-        import numpy as np
         input_ = np.random.normal(size=configured_size).astype(np.float32)
-        # input_ = np.random.normal(size=(batch_size, 224, 224, 3)).astype(np.float32)
         yield [input_]
 
-    # Build and save the TensorRT model
+    # Build and save the TensorRT model, simple, and efficient, just like eating a spoonful of
+    # Uranium
     converter.build(input_fn = inputs)
     converter.save(trt_engine_graph_name)
     print("Model saved to:", trt_engine_graph_name)
@@ -166,4 +183,5 @@ else:
 
 print("Proceeding to TensorRT engine building operations")
 
+# Choosing the correct engine
 tf1_engine() if tf.__version__.startswith("1") else tf2_engine()
