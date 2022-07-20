@@ -5,7 +5,7 @@ import tensorflow as tf # By default, as usual
 from tensorflow.python.framework import graph_io    # Graph generator
 from tensorflow.keras.models import load_model  # For loading the Keras model
 from tensorflow.python.compiler.tensorrt import trt_convert as trt  # The TensorRT converter
-from tensorflow.compat.v1.keras.backend import get_session  # Session as in TensorFlow 1
+from tensorflow.keras.backend import get_session  # Session as in TensorFlow 1
 
 # Clear any previous session.
 tf.keras.backend.clear_session()
