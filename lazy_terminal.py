@@ -133,7 +133,8 @@ def tf2_engine(model_fname=args.input_model,
         model = tf.keras.models.load_model(model_fname)
         model.save(f"{model_fname[:-3]}_saved_model") # Save it as ProtoBuf model
         model_path_pb = f"{model_fname[:-3]}_saved_model"
-
+    else:
+        model_path_pb = model_fname
     # Self explanatory
     trt_engine_graph_name = f"{model_path_pb}_trt_engine_{precision_mode}.pb"
 
