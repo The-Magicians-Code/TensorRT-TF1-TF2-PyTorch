@@ -2,7 +2,7 @@ import tensorflow as tf
 # Uncomment the next two lines in case you're that one smartass who somehow tries to run it on tf2
 # import tensorflow.compat.v1 as tf
 # tf.disable_v2_behavior()    # read the previous comment again, dumbass
-from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2 as Net
+from tensorflow.keras.applications import MobileNetV2 as Net
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.applications.mobilenet_v2 import preprocess_input, decode_predictions
 import numpy as np
