@@ -133,11 +133,9 @@ def tf2_engine(model_fname=args.input_model,
         model = tf.keras.models.load_model(model_fname)
         model.save(f"{model_fname[:-3]}_saved_model") # Save it as ProtoBuf model
         model_path_pb = f"{model_fname[:-3]}_saved_model"
-    else:
-        model_path_pb = model_fname[:-3]  # Don't do anything if you have the ProtoBuf model
 
     # Self explanatory
-    trt_engine_graph_name = f"{model_fname[:-3]}_trt_engine_{precision_mode}.pb"
+    trt_engine_graph_name = f"{model_path_pb}_trt_engine_{precision_mode}.pb"
 
     # Initialise and set conversion parameters
     conversion_params = trt.DEFAULT_TRT_CONVERSION_PARAMS
@@ -173,7 +171,7 @@ def tf2_engine(model_fname=args.input_model,
 print(f"Using TensorFlow version: {tf.__version__}")
 
 input_model = args.input_model
-if input_model.endswith(".pb") and tf.__version__.startswith("2"):
+if input_model.endswith("_pb") and tf.__version__.startswith("2"):
     print("ProtoBuf model, no freezing needed")
 elif input_model.endswith(".h5"):
     print("Keras model, creating a frozen graph (ProtoBuf) model")
