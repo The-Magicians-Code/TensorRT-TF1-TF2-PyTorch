@@ -48,69 +48,79 @@ def tf1_engine(model_fname=args.input_model,
         TensorRT engine: Does what the title says
     """
 
-    from tensorflow.python.framework import graph_io  # Graph generator
-    from tensorflow.keras.models import load_model  # For loading the Keras model
-    from tensorflow.keras.backend import get_session  # Session as in TensorFlow 1
+    if model_fname.endswith(".h5"): # If it's a Keras model
+        from tensorflow.python.framework import graph_io  # Graph generator
+        from tensorflow.keras.models import load_model  # For loading the Keras model
+        from tensorflow.keras.backend import get_session  # Session as in TensorFlow 1
 
-    trt_engine_graph_name = f"{model_fname[:-3]}_trt_engine_{precision_mode}.pb"
+        trt_engine_graph_name = f"{model_fname[:-3]}_trt_engine_{precision_mode}.pb"
+        def freeze_graph(graph, session, output, save_pb_dir=".", save_pb_name="frozen_model.pb", 
+                        save_pb_as_text=False):
+            """Generates a frozen protobuf (.pb) graph from loaded Keras model
+            Args:
+                graph: Session graph
+                session: tf.Session
+                output: Model output layer names
+                save_pb_dir (str, optional): Frozen graph save directory. Defaults to ".".
+                save_pb_name (str, optional): Frozen graph name. Defaults to "frozen_model.pb".
+                save_pb_as_text (bool, optional): Save graph as text file. Defaults to False.
+            Returns:
+                graphdef_frozen: Frozen Keras model graph instance
+            """
+            with graph.as_default():
+                graphdef_inf = tf.graph_util.remove_training_nodes(graph.as_graph_def())
+                graphdef_frozen = tf.graph_util.convert_variables_to_constants(session, graphdef_inf, output)
+                graph_io.write_graph(graphdef_frozen, save_pb_dir, save_pb_name, as_text=save_pb_as_text)
+                return graphdef_frozen
 
-    def freeze_graph(graph, session, output, save_pb_dir=".", save_pb_name="frozen_model.pb", 
-                    save_pb_as_text=False):
-        """Generates a frozen protobuf (.pb) graph from loaded Keras model
-        Args:
-            graph: Session graph
-            session: tf.Session
-            output: Model output layer names
-            save_pb_dir (str, optional): Frozen graph save directory. Defaults to ".".
-            save_pb_name (str, optional): Frozen graph name. Defaults to "frozen_model.pb".
-            save_pb_as_text (bool, optional): Save graph as text file. Defaults to False.
-        Returns:
-            graphdef_frozen: Frozen Keras model graph instance
-        """
-        with graph.as_default():
-            graphdef_inf = tf.graph_util.remove_training_nodes(graph.as_graph_def())
-            graphdef_frozen = tf.graph_util.convert_variables_to_constants(session, graphdef_inf, output)
-            graph_io.write_graph(graphdef_frozen, save_pb_dir, save_pb_name, as_text=save_pb_as_text)
-            return graphdef_frozen
+        # This line must be executed before loading Keras model.
+        tf.keras.backend.set_learning_phase(0)
 
-    # This line must be executed before loading Keras model.
-    tf.keras.backend.set_learning_phase(0)
+        # Self explanatory
+        model = load_model(model_fname)
 
-    # Self explanatory
-    model = load_model(model_fname)
+        # Start a session
+        session = get_session()
 
-    # Start a session
-    session = get_session()
+        # Obtain model inputs and outputs and their respective names
+        input_names = [t.op.name for t in model.inputs]
+        output_names = [t.op.name for t in model.outputs]
 
-    # Obtain model inputs and outputs and their respective names
-    input_names = [t.op.name for t in model.inputs]
-    output_names = [t.op.name for t in model.outputs]
+        # Print input and output node names and write them to a text file
+        print(input_names, output_names)
+        with open(f"{model_fname[:-3]}_data.txt", "w") as data:
+            data.write(f"{input_names[0]},{output_names[0]}\n")
 
-    # Print input and output node names and write them to a text file
-    print(input_names, output_names)
-    with open(f"{model_fname[:-3]}_data.txt", "w") as data:
-        data.write(f"{input_names[0]},{output_names[0]}\n")
+        # Generate the frozen graph
+        frozen_graph = freeze_graph(session.graph, 
+                                    session, 
+                                    output_names, 
+                                    save_pb_dir=save_pb_dir, 
+                                    save_pb_name=f"frozen_{model_fname[:-3]}.pb")
 
-    # Generate the frozen graph
-    frozen_graph = freeze_graph(session.graph, 
-                                session, 
-                                output_names, 
-                                save_pb_dir=save_pb_dir, 
-                                save_pb_name=f"frozen_{model_fname[:-3]}.pb")
+        # Generate TensorRT graph
+        trt_graph = trt.create_inference_graph(
+            input_graph_def=frozen_graph,
+            outputs=output_names,
+            max_batch_size=batch_size,
+            max_workspace_size_bytes=1<<25,
+            precision_mode=precision_mode,
+            minimum_segment_size=50
+        )
 
-    # Generate TensorRT graph
-    trt_graph = trt.create_inference_graph(
-        input_graph_def=frozen_graph,
-        outputs=output_names,
-        max_batch_size=batch_size,
-        max_workspace_size_bytes=1<<25,
+        # Save the generated TensorRT engine graph
+        graph_io.write_graph(trt_graph, trt_engine_graph_dir,
+                            trt_engine_graph_name, as_text=False)
+
+    else: # We're dealing with a SavedModel format
+        trt_engine_graph_name = f"{model_fname}_trt_engine_{precision_mode}"
+        converter = trt.TrtGraphConverter(
+        input_saved_model_dir=model_fname,
+        max_workspace_size_bytes=(1<<25),
         precision_mode=precision_mode,
-        minimum_segment_size=50
-    )
-
-    # Save the generated TensorRT engine graph
-    graph_io.write_graph(trt_graph, trt_engine_graph_dir,
-                        trt_engine_graph_name, as_text=False)
+        maximum_cached_engines=100)
+        converter.convert()
+        converter.save(trt_engine_graph_name)
 
     # Clear any previous session.
     tf.keras.backend.clear_session()
@@ -172,7 +182,7 @@ def tf2_engine(model_fname=args.input_model,
 print(f"Using TensorFlow version: {tf.__version__}")
 
 input_model = args.input_model
-if Path(f"{input_model}/saved_model.pb").is_file() and tf.__version__.startswith("2"):
+if Path(f"{input_model}/saved_model.pb").is_file():
     print("SavedModel type model, no freezing needed")
 elif input_model.endswith(".h5"):
     print("Keras model, creating a frozen graph (.pb or SavedModel) model")
