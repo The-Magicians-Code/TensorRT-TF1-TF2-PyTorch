@@ -1,5 +1,6 @@
 import argparse
 import tensorflow as tf
+from pathlib import Path
 from tensorflow.python.compiler.tensorrt import trt_convert as trt
 
 # Init parser
@@ -10,7 +11,7 @@ parser.add_argument("--precision_mode",
     required=True) # Uint8 Soon_tm
 parser.add_argument("--input_model", 
     type=str,
-    help="Keras .h5 file or SavedModel _pb, model.h5 or folder consisting model.pb for example", 
+    help="Keras .h5 file or SavedModel, model.h5 or model/saved_model.pb for example", 
     required=True)
 parser.add_argument("--batch_size", 
     type=int,
@@ -18,7 +19,7 @@ parser.add_argument("--batch_size",
     default=1)
 parser.add_argument("--save_frozen_dir", 
     type=str,
-    help="Saves Keras .h5 model as frozen _pb model to a specified " \
+    help="Saves Keras .h5 model as frozen .pb model to a specified " \
     "directory, can be fed later manually to the TensorRT engine or" \
     " launched to mobile environments", 
     default="./")
@@ -171,10 +172,10 @@ def tf2_engine(model_fname=args.input_model,
 print(f"Using TensorFlow version: {tf.__version__}")
 
 input_model = args.input_model
-if input_model.endswith("_pb") and tf.__version__.startswith("2"):
-    print("ProtoBuf model, no freezing needed")
+if Path(f"{input_model}/saved_model.pb").is_file() and tf.__version__.startswith("2"):
+    print("SavedModel type model, no freezing needed")
 elif input_model.endswith(".h5"):
-    print("Keras model, creating a frozen graph (ProtoBuf) model")
+    print("Keras model, creating a frozen graph (.pb or SavedModel) model")
 else:
     raise ValueError("Unknown format, .h5 (TensorFlow 1 and 2) or .pb " \
     "(TensorFlow 2) accepted")
